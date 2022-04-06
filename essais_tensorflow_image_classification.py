@@ -13,14 +13,32 @@ fashion_mnist = tf.keras.datasets.fashion_mnist
 
 class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
                'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
-
+print(train_labels[:5])
 print(len(train_labels))
+
+# Une image : np.array 28 x 28, chaque valeur entre 0 et 255 donnant une couleur
 
 # plt.figure()
 # plt.imshow(train_images[10])
 # plt.colorbar()
 # plt.grid(False)
 # plt.show()
+
+""" bricolages pour faire des tests """
+# x = train_images[10].copy()
+# x[0, :] = [0 for i in range(x.shape[0])]
+# print(x)
+# plt.figure()
+# plt.imshow(x)
+# plt.colorbar()
+# plt.grid(False)
+# plt.show()
+# exit()
+
+
+
+
+
 
 train_images = train_images / 255.0
 test_images = test_images / 255.0
