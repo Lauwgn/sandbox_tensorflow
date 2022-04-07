@@ -7,6 +7,8 @@ def correspondance_table(product_id_list):
     product_ids_df = pd.DataFrame(data=product_id_list, columns=["product_id"])
     product_ids_df = product_ids_df.drop_duplicates().reset_index(drop=True)
     # print(product_ids_df)
+    print(product_ids_df.index)
+
     dict_products_corresp_int_id = dict(zip(product_ids_df.index, product_ids_df['product_id']))
     dict_products_corresp_id_int = dict(zip(product_ids_df['product_id'], product_ids_df.index))
     # print(dict_products_corresp_int_id)
@@ -22,6 +24,18 @@ def convert_vect_into_ids(x, dict_products_corresp_int_id):
     return result
 
 
+def make_mvis(luw):
+    luw['nb_visit'] = np.ones(shape=(len(luw), 1))
+    mvis = pd.pivot_table(luw, index=["visitor_id"], columns=['product_id'], values='nb_visit',
+                          fill_value=0.0)
+    # print(mvis_3_input)
+
+    if mvis.sum().sum() != (len(luw)):
+          print("ERROR : loss of data - see code for more information")
+
+    return mvis
+
+
 def select_visitors_enough_visits(luw, min_visits, max_visits):
 
     nb_visits_series = luw['visitor_id'].value_counts().sort_values(ascending=False)
@@ -30,7 +44,8 @@ def select_visitors_enough_visits(luw, min_visits, max_visits):
 
     visitor_id_min_visits_list = nb_visits_series[nb_visits_series >= min_visits].index.tolist()
     # print(visitor_id_min_visits_list)
-    print("Nb visitors with more than {} visits and less than {} visits : {}".format(min_visits, max_visits,
+    print('\n',
+          "Nb visitors with more than {} visits and less than {} visits : {}".format(min_visits, max_visits,
                                                                                      len(visitor_id_min_visits_list)),
           "Nb products in Luw : {}".format(luw['product_id'].nunique()), '\n', sep='\n')
 
@@ -40,7 +55,7 @@ def select_visitors_enough_visits(luw, min_visits, max_visits):
     return visits_min_df
 
 
-def split_data_and_expected_result(visits_min_df):
+def split_path_and_last_product(visits_min_df):
 
     visitors, input_list, input_index, input_df_list, input_df_index, expected_list = [], [], [], [], [], []
 
@@ -65,7 +80,7 @@ def split_data_and_expected_result(visits_min_df):
           "Nb de produits dans luw min visites : {}".format(visits_min_df['product_id'].nunique()),
           '\n', sep='\n')
 
-    return visitors, visits_min_df_input, expected_list
+    return np.array(visitors), visits_min_df_input, expected_list
 
 
 

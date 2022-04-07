@@ -6,14 +6,12 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-from src.src import convert_vect_into_ids, correspondance_table, select_visitors_enough_visits, split_data_and_expected_result
+from src.src import convert_vect_into_ids, correspondance_table, make_mvis, select_visitors_enough_visits,\
+    split_path_and_last_product
 
 
 def main():
-
     luw = pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=5000)
-    product_id_list = luw['product_id'].unique().tolist()
-    nb_products_luw = len(product_id_list)
     # print(luw)
 
     """ ******************************************************************************** """
@@ -21,27 +19,25 @@ def main():
     """ ******************************************************************************** """
 
     visits_min_df = select_visitors_enough_visits(luw, 3, 10)
+    product_id_list = visits_min_df['product_id'].unique().tolist()
+    nb_products_visits_min_df = len(product_id_list)
+    print("Nb products in visits_min_df :{}".format(nb_products_visits_min_df))
 
     """ ******************************************************************************** """
     """ SPLIT : DATA // EXPECTED RESULT                                                  """
     """ ******************************************************************************** """
 
-    visitors, visits_min_df_input, expected_list = split_data_and_expected_result(visits_min_df)
+    visitors, luw_path_for_input, last_product_list = split_path_and_last_product(visits_min_df)
+
+    print("Check equality {}, {}, {}".format(len(visitors), luw_path_for_input.index.nunique(), len(last_product_list)), '\n')
 
     """ ******************************************************************************** """
     """ PREPARATION DES DONNEES                                                          """
     """ ******************************************************************************** """
 
-    visits_min_df_input.reset_index(inplace=True)
-    visits_min_df_input['nb_visit'] = np.ones(shape=(len(visits_min_df_input), 1))
-    mvis_3_input = pd.pivot(visits_min_df_input, index=["visitor_id"], columns=['product_id'], values=['nb_visit'])
-    # mvis_3_input = mvis_3_input.fillna(0).convert_dtypes()
-    mvis_3_input = mvis_3_input.fillna(0)
-    # print(mvis_3_input)
-
-    if mvis_3_input.sum().sum() != (len(visits_min_df_input)):
-          print("ERROR : loss of data - see code for more information")
-    mvis_3_input.to_csv("data/mvis_3.csv")
+    luw_path_for_input.reset_index(inplace=True)
+    mvis_input = make_mvis(luw_path_for_input)
+    mvis_input.to_csv("data/mvis_3.csv")
 
     """ ******************************************************************************** """
     """ TABLE DE CORRESPONDANCE                                                          """
@@ -53,19 +49,49 @@ def main():
     """ ENTRAINEMENT DU MODELE                                                           """
     """ ******************************************************************************** """
 
-    expected_list_int = list(map(lambda x: dict_products_corresp_id_int[x], expected_list))
-    # print(expected_list)
+    expected_list_int = list(map(lambda x: dict_products_corresp_id_int[x], last_product_list))
+    print("Maximum des id dans last product seen : {}".format(np.max(expected_list_int)))
+    l = []
+    for i in range(nb_products_visits_min_df):
+        if not i in expected_list_int:
+            l.append(i)
+    print("Produits non présents dans last product seen : {}".format(l))
+    print("Longueur de last product seen : {}".format(len(expected_list_int)))
+    # print(last_product_list)
     # print(expected_list_int)
-    X = mvis_3_input.values
+    X = mvis_input.values
     y = np.array(expected_list_int)
     # print(X, y, sep='\n')
     # print(len(np.unique(y)))
 
-    X_train, X_test, y_train, y_test, vis_train, vis_test = train_test_split(X, y, visitors, test_size=0.2, random_state=42)
-    print("X_test.shape : {}".format(X_test.shape),
-          "y_test.shape : {}".format(y_test.shape),
+    X_train, X_test, y_train, y_test, vis_train, vis_test = train_test_split(X, y, visitors, test_size=0.2, random_state=10)
+    print("X.shape : {}".format(X.shape),
           "X_train.shape : {}".format(X_train.shape),
-          "y_train.shape : {}".format(y_train.shape), '\n', sep='\n')
+          "X_test.shape : {}".format(X_test.shape),
+          "y.shape : {}".format(y.shape),
+          "y_train.shape : {}".format(y_train.shape),
+          "y_test.shape : {}".format(y_test.shape),
+          "visitors.shape : {}".format(visitors.shape),
+          "vis_train.shape : {}".format(vis_train.shape),
+          "vis_test.shape : {}".format(vis_test.shape),
+          '\n', sep='\n')
+
+    print(len(mvis_input))
+    print(X[0])
+    print(len(X[0]))
+    print(y[0])
+    print(dict_products_corresp_int_id[y[0]])
+    print(visitors[0])
+
+    a = np.where(X[0] == 1)[0]
+    print(a)
+    result = [dict_products_corresp_int_id[i] for i in a]
+    print(result)
+
+
+
+
+    print(X[0].shape)
     # print(X_train)
     # print(y_train)
 
@@ -73,14 +99,14 @@ def main():
         tf.keras.layers.Dense(64, activation='relu'),
         tf.keras.layers.Dense(64, activation='relu'),
         # tf.keras.layers.Dense(len(np.unique(y)))
-        tf.keras.layers.Dense(nb_products_luw)
+        tf.keras.layers.Dense(nb_products_visits_min_df)
     ])
 
     model.compile(optimizer='adam',
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'])
 
-    model.fit(X_train, y_train, batch_size=128, epochs=15)
+    model.fit(X_train, y_train, batch_size=128, epochs=2)
 
     """ ******************************************************************************** """
     """ CONTROLES DU MODELE                                                           """
@@ -96,7 +122,7 @@ def main():
     # print(np.sum(predictions[2]))
     # print(np.argmax(predictions[2]))
 
-    for i in [10, 15, 20]:
+    for i in [2, 3, 4]:
         r = convert_vect_into_ids(X_test[i], dict_products_corresp_int_id)
         print("Visitor id : {}".format(vis_test[i]))
         print("Parcours : {}".format(r))
