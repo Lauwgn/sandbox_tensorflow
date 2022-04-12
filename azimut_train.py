@@ -1,17 +1,19 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
+import json
 
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-from src.src import convert_vect_into_ids, correspondance_table, make_mvis, select_visitors_enough_visits,\
+from src.src import convert_vect_into_ids, correspondance_table, make_mvis, mvis_rename_columns,\
+    select_visitors_enough_visits,\
     split_path_and_last_product
 
 
 def main():
-    luw = pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=5000)
+    luw = pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=50000)
     # print(luw)
 
     """ ******************************************************************************** """
@@ -21,7 +23,16 @@ def main():
     visits_min_df = select_visitors_enough_visits(luw, 3, 10)
     product_id_list = visits_min_df['product_id'].unique().tolist()
     nb_products_visits_min_df = len(product_id_list)
-    print("Nb products in visits_min_df :{}".format(nb_products_visits_min_df))
+
+
+    """ ******************************************************************************** """
+    """ TABLE DE CORRESPONDANCE                                                          """
+    """ ******************************************************************************** """
+
+    dict_products_corresp_int_id, dict_products_corresp_id_int = correspondance_table(product_id_list)
+
+    with open("data/dict_products_corresp_int_id.json", 'w+') as jsonfile:
+        json.dump(dict_products_corresp_int_id, jsonfile, indent=4)
 
     """ ******************************************************************************** """
     """ SPLIT : DATA // EXPECTED RESULT                                                  """
@@ -36,14 +47,13 @@ def main():
     """ ******************************************************************************** """
 
     luw_path_for_input.reset_index(inplace=True)
-    mvis_input = make_mvis(luw_path_for_input)
+    mvis_input = make_mvis(luw_path_for_input, product_id_list)
+
+    mvis_input = mvis_rename_columns(mvis_input, dict_products_corresp_id_int)
+    mvis_input = mvis_input.loc[visitors]
+    print(mvis_input)
     mvis_input.to_csv("data/mvis_3.csv")
 
-    """ ******************************************************************************** """
-    """ TABLE DE CORRESPONDANCE                                                          """
-    """ ******************************************************************************** """
-
-    dict_products_corresp_int_id, dict_products_corresp_id_int = correspondance_table(product_id_list)
 
     """ ******************************************************************************** """
     """ ENTRAINEMENT DU MODELE                                                           """
@@ -53,9 +63,9 @@ def main():
     print("Maximum des id dans last product seen : {}".format(np.max(expected_list_int)))
     l = []
     for i in range(nb_products_visits_min_df):
-        if not i in expected_list_int:
+        if i not in expected_list_int:
             l.append(i)
-    print("Produits non présents dans last product seen : {}".format(l))
+    # print("Produits non présents dans last product seen : {}".format(l))
     print("Longueur de last product seen : {}".format(len(expected_list_int)))
     # print(last_product_list)
     # print(expected_list_int)
@@ -75,23 +85,6 @@ def main():
           "vis_train.shape : {}".format(vis_train.shape),
           "vis_test.shape : {}".format(vis_test.shape),
           '\n', sep='\n')
-
-    print(len(mvis_input))
-    print(X[0])
-    print(len(X[0]))
-    print(y[0])
-    print(dict_products_corresp_int_id[y[0]])
-    print(visitors[0])
-
-    a = np.where(X[0] == 1)[0]
-    print(a)
-    result = [dict_products_corresp_int_id[i] for i in a]
-    print(result)
-
-
-
-
-    print(X[0].shape)
     # print(X_train)
     # print(y_train)
 
@@ -106,7 +99,7 @@ def main():
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'])
 
-    model.fit(X_train, y_train, batch_size=128, epochs=2)
+    model.fit(X_train, y_train, batch_size=128, epochs=15)
 
     """ ******************************************************************************** """
     """ CONTROLES DU MODELE                                                           """

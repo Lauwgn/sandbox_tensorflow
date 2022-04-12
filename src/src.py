@@ -24,17 +24,46 @@ def convert_vect_into_ids(x, dict_products_corresp_int_id):
     return result
 
 
-def make_mvis(luw):
+def make_mvis(luw, product_id_list):
     luw['nb_visit'] = np.ones(shape=(len(luw), 1))
     mvis = pd.pivot_table(luw, index=["visitor_id"], columns=['product_id'], values='nb_visit',
                           fill_value=0.0)
     # print(mvis_3_input)
 
+    products_to_add = []
+    for tmp_id in product_id_list:
+        if tmp_id not in mvis.columns:
+            products_to_add.append(tmp_id)
+
+    for tmp_id in products_to_add:
+        mvis[tmp_id] = np.zeros(shape=(len(mvis), 1))
+
+
     if mvis.sum().sum() != (len(luw)):
           print("ERROR : loss of data - see code for more information")
 
+    if len(np.intersect1d(mvis.columns, product_id_list)) != len(product_id_list):
+          print("ERROR : loss of data - see code for more information")
+
+    # print(mvis)
+    # print(mvis.columns)
+
     return mvis
 
+
+def mvis_rename_columns(mvis, dict_products_corresp_id_int):
+
+    new_index = mvis.columns.copy()
+    new_index = new_index.map(lambda x: dict_products_corresp_id_int[x])
+    mvis.columns = new_index
+    # print(new_index)
+
+    mvis.sort_index(axis='columns', ascending=True, inplace=True)
+
+    # print(mvis)
+    # print(mvis.columns)
+
+    return mvis.copy()
 
 def select_visitors_enough_visits(luw, min_visits, max_visits):
 

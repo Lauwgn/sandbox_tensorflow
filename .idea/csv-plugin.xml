@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/azimut_train.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/data/20211206-catalog-533d1d6652e1.csv">
           <value>
             <Attribute>
