@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-import json
+import pickle
 
 import tensorflow as tf
 from tensorflow import keras
@@ -13,8 +13,8 @@ from src.src import convert_vect_into_ids, correspondance_table, make_mvis, mvis
 
 
 def main():
-    luw = pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=50000)
-    # print(luw)
+    luw = pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=100000)
+    print(luw)
 
     """ ******************************************************************************** """
     """ VISITEURS AYANT VU AU MOINS xxx PRODUITS                                         """
@@ -31,8 +31,11 @@ def main():
 
     dict_products_corresp_int_id, dict_products_corresp_id_int = correspondance_table(product_id_list)
 
-    with open("data/dict_products_corresp_int_id.json", 'w+') as jsonfile:
-        json.dump(dict_products_corresp_int_id, jsonfile, indent=4)
+    with open("data/dict_products_corresp_int_id.pickle", 'wb') as file:
+        pickle.dump(dict_products_corresp_int_id, file)
+
+    with open("data/dict_products_corresp_id_int.pickle", 'wb') as file:
+        pickle.dump(obj=dict_products_corresp_id_int, file=file)
 
     """ ******************************************************************************** """
     """ SPLIT : DATA // EXPECTED RESULT                                                  """
@@ -51,8 +54,8 @@ def main():
 
     mvis_input = mvis_rename_columns(mvis_input, dict_products_corresp_id_int)
     mvis_input = mvis_input.loc[visitors]
-    print(mvis_input)
-    mvis_input.to_csv("data/mvis_3.csv")
+    # print(mvis_input)
+    mvis_input.to_csv("data/mvis_input.csv")
 
 
     """ ******************************************************************************** """
@@ -61,11 +64,6 @@ def main():
 
     expected_list_int = list(map(lambda x: dict_products_corresp_id_int[x], last_product_list))
     print("Maximum des id dans last product seen : {}".format(np.max(expected_list_int)))
-    l = []
-    for i in range(nb_products_visits_min_df):
-        if i not in expected_list_int:
-            l.append(i)
-    # print("Produits non présents dans last product seen : {}".format(l))
     print("Longueur de last product seen : {}".format(len(expected_list_int)))
     # print(last_product_list)
     # print(expected_list_int)
@@ -74,16 +72,17 @@ def main():
     # print(X, y, sep='\n')
     # print(len(np.unique(y)))
 
-    X_train, X_test, y_train, y_test, vis_train, vis_test = train_test_split(X, y, visitors, test_size=0.2, random_state=10)
+    # X_train, X_test, y_train, y_test, vis_train, vis_test = train_test_split(X, y, visitors, test_size=0.2, random_state=10)
+    X_train, y_train, vis_train, =X, y, visitors
     print("X.shape : {}".format(X.shape),
           "X_train.shape : {}".format(X_train.shape),
-          "X_test.shape : {}".format(X_test.shape),
+          # "X_test.shape : {}".format(X_test.shape),
           "y.shape : {}".format(y.shape),
           "y_train.shape : {}".format(y_train.shape),
-          "y_test.shape : {}".format(y_test.shape),
+          # "y_test.shape : {}".format(y_test.shape),
           "visitors.shape : {}".format(visitors.shape),
           "vis_train.shape : {}".format(vis_train.shape),
-          "vis_test.shape : {}".format(vis_test.shape),
+          # "vis_test.shape : {}".format(vis_test.shape),
           '\n', sep='\n')
     # print(X_train)
     # print(y_train)
@@ -99,28 +98,30 @@ def main():
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'])
 
-    model.fit(X_train, y_train, batch_size=128, epochs=15)
+    model.fit(X_train, y_train, batch_size=128, epochs=3)
+
+    model.save('data/model_azimut')
 
     """ ******************************************************************************** """
     """ CONTROLES DU MODELE                                                           """
     """ ******************************************************************************** """
 
-    probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
+    # probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
+    #
+    # predictions = probability_model.predict(X_test)
 
-    predictions = probability_model.predict(X_test)
-
-    print('\n')
+    # print('\n')
     # print(X_test[2])
     # print(predictions[2])
     # print(np.sum(predictions[2]))
     # print(np.argmax(predictions[2]))
 
-    for i in [2, 3, 4]:
-        r = convert_vect_into_ids(X_test[i], dict_products_corresp_int_id)
-        print("Visitor id : {}".format(vis_test[i]))
-        print("Parcours : {}".format(r))
-        print("Prediction : {}".format(dict_products_corresp_int_id[np.argmax(predictions[i])]))
-        print("Reality : {}".format(dict_products_corresp_int_id[y_test[i]]), '\n')
+    # for i in [2, 3, 4]:
+    #     r = convert_vect_into_ids(X_test[i], dict_products_corresp_int_id)
+    #     print("Visitor id : {}".format(vis_test[i]))
+    #     print("Parcours : {}".format(r))
+    #     print("Prediction : {}".format(dict_products_corresp_int_id[np.argmax(predictions[i])]))
+    #     print("Reality : {}".format(dict_products_corresp_int_id[y_test[i]]), '\n')
 
 
 main()
