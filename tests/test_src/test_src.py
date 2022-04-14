@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from src.src import convert_vect_into_ids, correspondance_table, select_visitors_enough_visits,\
+from src.src import convert_vect_into_ids, correspondance_table, \
     split_path_and_last_product
 
 
@@ -30,30 +30,6 @@ class TestCorrespondanceTable(unittest.TestCase):
         expected2 = {"id_1": 0, "id_2": 1, "id_3": 2}
         self.assertDictEqual(expected1, result1)
         self.assertDictEqual(expected2, result2)
-
-
-class TestSelectVisitorsEnoughVisits(unittest.TestCase):
-
-    def test_1(self):
-
-        luw = pd.DataFrame.from_dict({'visitor_id': ['wvi_1',
-                                               'wvi_1', 'wvi_2',
-                                               'wvi_1', 'wvi_2', 'wvi_3',
-                                               'wvi_1', 'wvi_2', 'wvi_3', 'wvi_4'],
-                                       'product_id': ['id_1',
-                                               'id_2', 'id_2',
-                                               'id_3', 'id_3', 'id_3',
-                                               'id_4', 'id_4', 'id_4', 'id_4']
-                                       })
-
-        result = select_visitors_enough_visits(luw, min_visits=2, max_visits=3)
-        # print(result)
-
-        self.assertEqual(5, len(result))
-        self.assertEqual(3, len(result.loc["wvi_2"]))
-        self.assertEqual(2, len(result.loc["wvi_3"]))
-        self.assertEqual(["product_id"], result.columns)
-        self.assertEqual("visitor_id", result.index.name)
 
 
 class TestSplitPathAndLastProduct(unittest.TestCase):

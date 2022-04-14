@@ -33,3 +33,5 @@ class MvisDenseManager:
         # print(mvis.columns)
 
         return MvisDense(mvis)
+
+

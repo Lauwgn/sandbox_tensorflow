@@ -1,7 +1,8 @@
 import unittest
 import pandas as pd
+import numpy as np
 
-from models.models import Curlr, Luw, MvisThresholds, Product
+from models.models import Curlr, Luw, MvisDense, MvisThresholds, Product
 from models.model_catalog import Catalog
 
 
@@ -212,7 +213,6 @@ class TestCurlrSortForExportFull(unittest.TestCase):
         self.assertIsInstance(curlr, Curlr)
         self.assertEqual(["id_3", "id_2", "id_1", "id_5", "id_4"], curlr.index.tolist())
 
-
     def test_4_no_nb_visitors_coh_and_no_nb_visitors_id(self):
 
         columns = ['cohort_id', 'qualif', 'cohort_size', 'url', 'name']
@@ -284,6 +284,31 @@ class TestLuwFilterProductIdsFromCatalog(unittest.TestCase):
         self.assertEqual("id_2", luw["product_id"].iloc[1])
 
 
+class TestMvisDenseRenameColumnsToInt(unittest.TestCase):
+
+    def test_1(self):
+
+        visitors_list = ["wvi_1", "wvi_2", "wvi_3"]
+        id_list = ["id_1", "id_3", "id_2"]
+        values = np.array([[0, 0, 0],
+                           [1, 1, 0],
+                           [1, 0, 0]])
+        mvis = MvisDense(pd.DataFrame(index=visitors_list,
+                                      columns=id_list,
+                                      data=values))
+        # print(mvis)
+
+        dict_products_corresp_id_int = {"id_1": 0, "id_2": 1, "id_3": 2}
+
+        mvis.rename_columns_to_int(dict_products_corresp_id_int)
+        # print(mvis)
+
+        self.assertIsInstance(mvis, MvisDense)
+        self.assertEqual(["wvi_1", "wvi_2", "wvi_3"], mvis.index.tolist())
+        self.assertEqual([0, 1, 2], mvis.columns.tolist())
+        self.assertEqual([0, 0, 0, 1, 0, 1, 1, 0, 0], np.reshape(mvis.values, (1, -1))[0].tolist())
+
+
 class TestMvisThresholdsInit(unittest.TestCase):
 
     def test_init(self):
@@ -314,6 +339,19 @@ class TestMvisThresholdsToDict(unittest.TestCase):
                                 'nb_visits_max_threshold_id': 0,
                                 'nb_visits_min_threshold_visitors': 10,
                                 'nb_visits_max_threshold_visitors': 0})
+
+
+class TestProductConvertIntCategoryAzimut(unittest.TestCase):
+
+    def test_1(self):
+
+        p = Product(id="id_1", ref="FRSR01")
+        # print(p.to_dict())
+
+        result = p.convert_into_category_azimut()
+        # print(result)
+
+        self.assertEqual("SR", result)
 
 
 class TestProductToDict(unittest.TestCase):

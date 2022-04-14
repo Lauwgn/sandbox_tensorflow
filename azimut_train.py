@@ -7,15 +7,14 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-from src.src import convert_vect_into_ids, correspondance_table, mvis_rename_columns,\
-    split_path_and_last_product, select_visitors_enough_visits
+from src.src import convert_vect_into_ids, correspondance_table, split_path_and_last_product
 
 from models.mvisdense_manager import MvisDenseManager
 from models.luw_manager import LuwManager
 
 
 def main():
-    luw = pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=10000)
+    luw = pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=1000000)
     print(luw)
 
     """ ******************************************************************************** """
@@ -55,11 +54,10 @@ def main():
 
     luw_path_for_input.reset_index(inplace=True)
     mvis_input = MvisDenseManager.make_mvisdense(luw_path_for_input, product_id_list)
-
-    mvis_input = mvis_rename_columns(mvis_input, dict_products_corresp_id_int)
+    mvis_input.rename_columns_to_int(dict_products_corresp_id_int)
     mvis_input = mvis_input.loc[visitors]
     # print(mvis_input)
-    mvis_input.to_csv("data/mvis_input.csv")
+    # mvis_input.to_csv("data/mvis_input.csv")
 
 
     """ ******************************************************************************** """
@@ -102,7 +100,7 @@ def main():
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'])
 
-    model.fit(X_train, y_train, batch_size=128, epochs=3)
+    model.fit(X_train, y_train, batch_size=128, epochs=30)
 
     model.save('data/model_azimut')
 

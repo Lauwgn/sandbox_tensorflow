@@ -193,13 +193,6 @@ class Luw(pd.DataFrame):
         self.dropna(inplace=True, subset=["product_id"])
 
 
-class MvisDense(pd.DataFrame):
-    """
-    index : visitor_ids
-    columns : product_ids
-    """
-
-
 class Mvis:
 
     """
@@ -236,6 +229,21 @@ class Mvis:
             print("Number of visitors on any product page in array : " + str(len(self.visitor_ids_list)))
             print("Number of id analysed : " + str(len(self.product_ids_list)))
             print('\n', "Import Mvis - done", '\n')
+
+
+class MvisDense(pd.DataFrame):
+    """
+    index : visitor_ids
+    columns : product_ids
+    """
+
+    def rename_columns_to_int(self, dict_products_corresp_id_int):
+        new_index = self.columns.copy()
+        new_index = new_index.map(lambda x: dict_products_corresp_id_int[x])
+        self.columns = new_index
+        # print(new_index)
+
+        self.sort_index(axis='columns', ascending=True, inplace=True)
 
 
 class MvisThresholds:
@@ -329,6 +337,12 @@ class Product:
     def __hash__(self):
         # Can be defined because without nb_visitors, Product is an immutable object
         return hash((self.id, self.ref, self.url, self.name, self.price))
+
+    def convert_into_category_azimut(self):
+        ref = self.ref
+        category = ref[2:4]
+        return category
+
 
     def to_dict(self):
         expired_at = self.expired_at

@@ -1,13 +1,14 @@
 import numpy as np
 import pandas as pd
 
+from models.catalog_manager import CatalogManager
 
 def correspondance_table(product_id_list):
 
     product_ids_df = pd.DataFrame(data=product_id_list, columns=["product_id"])
     product_ids_df = product_ids_df.drop_duplicates().reset_index(drop=True)
     # print(product_ids_df)
-    print(product_ids_df.index)
+    # print(product_ids_df.index)
 
     dict_products_corresp_int_id = dict(zip(product_ids_df.index, product_ids_df['product_id']))
     dict_products_corresp_id_int = dict(zip(product_ids_df['product_id'], product_ids_df.index))
@@ -24,50 +25,24 @@ def convert_vect_into_ids(x, dict_products_corresp_int_id):
     return result
 
 
-def mvis_rename_columns(mvis, dict_products_corresp_id_int):
+def convert_id_into_category(product_id, catalog):
 
-    new_index = mvis.columns.copy()
-    new_index = new_index.map(lambda x: dict_products_corresp_id_int[x])
-    mvis.columns = new_index
-    # print(new_index)
-
-    mvis.sort_index(axis='columns', ascending=True, inplace=True)
-
-    # print(mvis)
-    # print(mvis.columns)
-
-    return mvis.copy()
-
-# @todo : à suppr
-def select_visitors_enough_visits(luw, min_visits, max_visits):
-
-    nb_visits_series = luw['visitor_id'].value_counts().sort_values(ascending=False)
-    nb_visits_series = nb_visits_series[nb_visits_series <= max_visits]
-    # print(nb_visits_series)
-
-    visitor_id_min_visits_list = nb_visits_series[nb_visits_series >= min_visits].index.tolist()
-    # print(visitor_id_min_visits_list)
-    print('\n',
-          "Nb visitors with more than {} visits and less than {} visits : {}".format(min_visits, max_visits,
-                                                                                     len(visitor_id_min_visits_list)),
-          "Nb products in Luw : {}".format(luw['product_id'].nunique()), '\n', sep='\n')
-
-    visits_min_df = luw.set_index(keys=['visitor_id']).loc[visitor_id_min_visits_list][['product_id']].copy()
-    # print('\n', visits_min_df)
-
-    return visits_min_df
+    prod = CatalogManager.find_product_in_catalog_with_attributs(catalog, attribut="id", attr_value=product_id)
+    # print(prod.to_dict())
+    category = prod.convert_into_category_azimut()
+    return category
 
 
-def split_path_and_last_product(visits_min_df, is_test=False):
+def split_path_and_last_product(luw, is_test=False):
 
     visitors, input_list, input_index, input_df_list, input_df_index, expected_list = [], [], [], [], [], []
-    visits_min_df = visits_min_df.set_index(keys=['visitor_id'])[['product_id']]
+    luw = luw.set_index(keys=['visitor_id'])[['product_id']]
     # print(visits_min_df)
 
     # for tmp_visitor in visits_min_df.index.unique()[:2]:
-    for tmp_visitor in visits_min_df.index.unique():
+    for tmp_visitor in luw.index.unique():
         visitors.append(tmp_visitor)
-        tmp_luw = visits_min_df.loc[tmp_visitor]
+        tmp_luw = luw.loc[tmp_visitor]
         # print(tmp_luw)
 
         input_index.append(tmp_visitor)
@@ -77,16 +52,16 @@ def split_path_and_last_product(visits_min_df, is_test=False):
         input_df_list += tmp_luw['product_id'][:-1].to_list()
         expected_list.append(tmp_luw['product_id'][-1])
 
-    visits_min_df_input = pd.DataFrame(data=input_df_list, index=pd.Index(input_df_index, name='visitor_id'),
-                                       columns=['product_id'])
-    # print('\n', visits_3min_df_input)
+    luw_input = pd.DataFrame(data=input_df_list, index=pd.Index(input_df_index, name='visitor_id'),
+                             columns=['product_id'])
+    # print('\n', luw_input)
     if not is_test:
-        print("Nb de lignes dans luw_input + nb expected : {}".format(len(visits_min_df_input) + len(expected_list)),
-              "Nb de visites luw min visites : {}".format(len(visits_min_df)),
-              "Nb de produits dans luw min visites : {}".format(visits_min_df['product_id'].nunique()),
+        print("Nb de lignes dans luw_input + nb expected : {}".format(len(luw_input) + len(expected_list)),
+              "Nb de visites luw min visites : {}".format(len(luw)),
+              "Nb de produits dans luw min visites : {}".format(luw['product_id'].nunique()),
               '\n', sep='\n')
 
-    return np.array(visitors), visits_min_df_input, expected_list
+    return np.array(visitors), luw_input, expected_list
 
 
 
