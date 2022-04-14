@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import json
 import pickle
 from sklearn.model_selection import train_test_split
 
@@ -8,6 +7,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
+from models.models import Luw
 from src.src import convert_vect_into_ids, make_mvis, mvis_rename_columns, select_visitors_enough_visits, split_path_and_last_product
 """ ******************************************************************************** """
 """ TABLE DE CORRESPONDANCE                                                          """
@@ -26,15 +26,12 @@ product_id_list = list(dict_products_corresp_int_id.values())
 """ VISITEURS AYANT VU AU MOINS xxx PRODUITS                                         """
 """ ******************************************************************************** """
 
-luw = pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=None)
-
-luw = luw[100000:]
-
-# @todo : rajouter un filtre sur les produits de luw qui ne sont pas dans dict_products
+luw = Luw(pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=None))
+luw = Luw(luw[100000:].reset_index(drop=True))
+luw.filter_product_ids_in_list_of_ids(product_id_list)
+print(luw)
 
 visits_min_df = select_visitors_enough_visits(luw, 3, 10)
-
-
 
 
 """ ******************************************************************************** """

@@ -1,4 +1,3 @@
-from src.utils.date import format_date
 from datetime import datetime
 import pandas as pd
 import numpy as np
@@ -7,46 +6,6 @@ import json
 from wag_core_modules.ia.cohort_matrix import CohortMatrix
 from tqdm import tqdm
 tqdm.pandas()
-
-
-class Curl(pd.DataFrame):
-
-    def export_curl(self, curl_export_filename, current_wti):
-        """Export from a curl Object
-
-        Parameters
-        ----------
-        self : Curl Object
-            DataFrame containing few columns, must have nb_visitors_id, nb_visitors_coh, cohort_size
-        curl_export_filename : string
-            Full export_filename for saving the data
-        current_wti : string
-            Identity of the client throught the wti
-        """
-        self.to_csv(curl_export_filename)
-
-        c_url = self.astype(dtype=int)
-
-        c_url.reset_index(inplace=True)
-
-        c_url_dict = CohortMatrix()
-        c_url_dict.data = c_url.to_dict(orient='dict')
-        c_url_dict.version = "1.0.0"
-        c_url_dict.vars = {}
-        c_url_dict.wti = current_wti
-        c_url_dict = c_url_dict.to_dict()
-
-        curl_export_filename_json = curl_export_filename[:-4]
-        curl_export_filename_json += ".json"
-
-        with open(curl_export_filename_json, 'w+', encoding='utf-8') as json_file:
-            json.dump(c_url_dict, json_file, indent=4)
-        json_file.close()
-
-    def display_import_curl(self):
-        print("Number of cohorts : " + str(len(self.index)))
-        print("Number of id : " + str(len(self.columns)))
-        print('\n', "Import Curl - done", '\n')
 
 
 class Curlr(pd.DataFrame):
@@ -227,18 +186,18 @@ class Luw(pd.DataFrame):
         self['product_id'] = self['product_id'].progress_apply(lambda x: x if x not in list_of_ids else np.NaN)
         self.dropna(inplace=True, subset=["product_id"])
 
-
-class StatsProduct(pd.DataFrame):
-
-    def filter_product_ids_from_catalog(self, catalog):
-        product_list = catalog.products_id_list
-        self['product_id'] = self['product_id'].progress_apply(lambda x: x if x in product_list else np.NaN)
+    def filter_product_ids_in_list_of_ids(self, list_of_ids):
+        if not isinstance(list_of_ids, list):
+            raise TypeError(f"List_of_ids isn't a list type, but a {type(list_of_ids)} type")
+        self['product_id'] = self['product_id'].progress_apply(lambda x: x if x in list_of_ids else np.NaN)
         self.dropna(inplace=True, subset=["product_id"])
 
-    def display_import_info(self):
-        print(f"Scope of the stats-product: {self['created_at'].min()} / {self['created_at'].max()}  ")
-        print("Nb visitors in stats-product :", self['visitor_id'].nunique())
-        print("Nb products seen by visitor :", self.shape[0] / self['visitor_id'].nunique())
+
+class MvisDense(pd.DataFrame):
+    """
+    index : visitor_ids
+    columns : product_ids
+    """
 
 
 class Mvis:
@@ -374,7 +333,7 @@ class Product:
     def to_dict(self):
         expired_at = self.expired_at
         if isinstance(expired_at, datetime):
-            expired_at = format_date(self.expired_at)
+            expired_at = self.expired_at
 
         return {
             'id': self.id,
@@ -390,83 +349,3 @@ class Product:
             'keywords': self.keywords,
         }
 
-
-class Recommendation:
-    label = ""
-    product_id = None
-    url = ""
-
-    def __init__(self, label, product_id=None, url=""):
-        self.label = label
-        self.product_id = product_id
-        self.url = url
-
-    def display(self):
-        print("Label : %s" % self.label)
-        print("Product Id : %s" % self.product_id)
-        print("Url : %s" % self.url)
-
-    def to_dict(self):
-        return {'label': self.label,
-                'product_id': self.product_id,
-                'url': self.url}
-
-
-class SessionsDf(pd.DataFrame):
-
-    def display_import_info(self):
-        print("nb sessions in sessions_df :", len(self))
-        print("nb visitors in sessions_df :", self['visitor_id'].nunique())
-        print("nb sessions by visitor :", len(self) / self['visitor_id'].nunique())
-        print("begin data : {} // end data : {}".format(self['created_at'].iloc[0], self['created_at'].iloc[-1]))
-        print('\n')
-
-    def from_wvi_to_visitors(self, visitors=pd.DataFrame()):
-        dict_wvi_id = dict(zip(visitors['wvi'].tolist(), visitors.index.tolist()))
-        self['visitor_id'] = self['visitor_id'].progress_apply(lambda x: dict_wvi_id[x] if x in visitors['wvi'].tolist()
-                                                               else np.nan)
-
-
-class BackupDf(pd.DataFrame):
-
-    def rename_columns_for_backup(self):
-        self.rename(columns={'_TrackerAction__action': 'action',
-                             '_TrackerAction__browser_name': 'browser_name',
-                             '_TrackerAction__browser_version': 'browser_version',
-                             '_TrackerAction__created_at': 'created_at',
-                             '_TrackerAction__data': 'data',
-                             '_TrackerAction__engine_name': 'engine_name',
-                             '_TrackerAction__engine_version': 'engine_version',
-                             '_TrackerAction__fingerprint': 'fingerprint',
-                             '_TrackerAction__io': 'io',
-                             '_TrackerAction__ip': 'ip',
-                             '_TrackerAction__languages': 'languages',
-                             '_TrackerAction__os': 'os',
-                             '_TrackerAction__platform': 'platform',
-                             '_TrackerAction__referer': 'referrer',
-                             '_TrackerAction__url': 'url',
-                             '_TrackerAction__version': 'version',
-                             '_TrackerAction__wgi': 'wgi',
-                             '_TrackerAction__wti': 'wti',
-                             '_TrackerAction__wvi': 'visitor_id',
-                             '_TrackerAction__product_id': 'product_id',
-                             '_TrackerAction__product_ref': 'ref',
-                             '_TrackerAction__product_template': 'template',
-                             '_TrackerAction__product_language': 'language',
-                             'referer': 'referrer',
-                             'id': 'product_id',
-                             'wvi': "visitor_id",
-                             'wti': "visitor_id"
-                             },
-                    errors="ignore", inplace=True)
-
-        if "Unnamed: 0" in self.columns:
-            self.drop(columns="Unnamed: 0", inplace=True)
-
-    def display_import_backup(self):
-        print('Number of columns in backup : ', len(self.columns), ' columns')
-        print("Number of actions at import : " + str(len(self)))
-        print("Number of visitors at import : " + str(self['visitor_id'].nunique()))
-        print("First date from database : " + str(self['created_at'].iloc[0]))
-        print("Last date from database : " + str(self['created_at'].iloc[-1]))
-        print('\n', "Import backup - done", '\n')

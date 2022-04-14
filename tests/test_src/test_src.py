@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from src.src import convert_vect_into_ids, correspondance_table, make_mvis, select_visitors_enough_visits,\
+from src.src import convert_vect_into_ids, correspondance_table, select_visitors_enough_visits,\
     split_path_and_last_product
 
 
@@ -30,23 +30,6 @@ class TestCorrespondanceTable(unittest.TestCase):
         expected2 = {"id_1": 0, "id_2": 1, "id_3": 2}
         self.assertDictEqual(expected1, result1)
         self.assertDictEqual(expected2, result2)
-
-
-class TestMakeMvis(unittest.TestCase):
-
-    def test_1_global(self):
-        luw = pd.DataFrame.from_dict({'product_id': ['id_1', 'id_3', 'id_2', 'id_1', 'id_2', 'id_3'],
-                                       'visitor_id': ['wvi_1', 'wvi_1', 'wvi_2', 'wvi_3', 'wvi_4', 'wvi_4']
-                                       })
-
-        result = make_mvis(luw)
-        # print(result)
-
-        self.assertIsInstance(result, pd.core.frame.DataFrame)
-        self.assertCountEqual(result.index, ['wvi_1', 'wvi_2', 'wvi_3', 'wvi_4'])
-        self.assertCountEqual(result['id_1'], [1, 0, 1, 0])
-        self.assertCountEqual(result['id_2'], [0, 1, 0, 1])
-        self.assertCountEqual(result['id_3'], [1, 0, 0, 1])
 
 
 class TestSelectVisitorsEnoughVisits(unittest.TestCase):
@@ -87,10 +70,9 @@ class TestSplitPathAndLastProduct(unittest.TestCase):
                                                'id_4', 'id_4', 'id_4']
                                        })
 
-        luw.set_index("visitor_id", inplace=True, drop=True)
         # print(luw)
 
-        visitors, visits_min_df_input, expected_list = split_path_and_last_product(luw)
+        visitors, visits_min_df_input, expected_list = split_path_and_last_product(luw, is_test=True)
         # print(visitors)
         self.assertEqual(["wvi_1", "wvi_2", "wvi_3"], visitors.tolist())
 

@@ -7,20 +7,24 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
-from src.src import convert_vect_into_ids, correspondance_table, make_mvis, mvis_rename_columns,\
-    select_visitors_enough_visits,\
-    split_path_and_last_product
+from src.src import convert_vect_into_ids, correspondance_table, mvis_rename_columns,\
+    split_path_and_last_product, select_visitors_enough_visits
+
+from models.mvisdense_manager import MvisDenseManager
+from models.luw_manager import LuwManager
 
 
 def main():
-    luw = pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=100000)
+    luw = pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=10000)
     print(luw)
 
     """ ******************************************************************************** """
     """ VISITEURS AYANT VU AU MOINS xxx PRODUITS                                         """
     """ ******************************************************************************** """
 
-    visits_min_df = select_visitors_enough_visits(luw, 3, 10)
+    # visits_min_df = select_visitors_enough_visits(luw, 3, 10)
+    visits_min_df = LuwManager.select_visitors_enough_visits(luw, 3, 10)
+    print(visits_min_df)
     product_id_list = visits_min_df['product_id'].unique().tolist()
     nb_products_visits_min_df = len(product_id_list)
 
@@ -50,7 +54,7 @@ def main():
     """ ******************************************************************************** """
 
     luw_path_for_input.reset_index(inplace=True)
-    mvis_input = make_mvis(luw_path_for_input, product_id_list)
+    mvis_input = MvisDenseManager.make_mvisdense(luw_path_for_input, product_id_list)
 
     mvis_input = mvis_rename_columns(mvis_input, dict_products_corresp_id_int)
     mvis_input = mvis_input.loc[visitors]

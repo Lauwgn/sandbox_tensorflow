@@ -24,33 +24,6 @@ def convert_vect_into_ids(x, dict_products_corresp_int_id):
     return result
 
 
-def make_mvis(luw, product_id_list):
-    luw['nb_visit'] = np.ones(shape=(len(luw), 1))
-    mvis = pd.pivot_table(luw, index=["visitor_id"], columns=['product_id'], values='nb_visit',
-                          fill_value=0.0)
-    # print(mvis_3_input)
-
-    products_to_add = []
-    for tmp_id in product_id_list:
-        if tmp_id not in mvis.columns:
-            products_to_add.append(tmp_id)
-
-    for tmp_id in products_to_add:
-        mvis[tmp_id] = np.zeros(shape=(len(mvis), 1))
-
-
-    if mvis.sum().sum() != (len(luw)):
-          print("ERROR : loss of data - see code for more information")
-
-    if len(np.intersect1d(mvis.columns, product_id_list)) != len(product_id_list):
-          print("ERROR : loss of data - see code for more information")
-
-    # print(mvis)
-    # print(mvis.columns)
-
-    return mvis
-
-
 def mvis_rename_columns(mvis, dict_products_corresp_id_int):
 
     new_index = mvis.columns.copy()
@@ -65,6 +38,7 @@ def mvis_rename_columns(mvis, dict_products_corresp_id_int):
 
     return mvis.copy()
 
+# @todo : à suppr
 def select_visitors_enough_visits(luw, min_visits, max_visits):
 
     nb_visits_series = luw['visitor_id'].value_counts().sort_values(ascending=False)
@@ -84,9 +58,11 @@ def select_visitors_enough_visits(luw, min_visits, max_visits):
     return visits_min_df
 
 
-def split_path_and_last_product(visits_min_df):
+def split_path_and_last_product(visits_min_df, is_test=False):
 
     visitors, input_list, input_index, input_df_list, input_df_index, expected_list = [], [], [], [], [], []
+    visits_min_df = visits_min_df.set_index(keys=['visitor_id'])[['product_id']]
+    # print(visits_min_df)
 
     # for tmp_visitor in visits_min_df.index.unique()[:2]:
     for tmp_visitor in visits_min_df.index.unique():
@@ -104,10 +80,11 @@ def split_path_and_last_product(visits_min_df):
     visits_min_df_input = pd.DataFrame(data=input_df_list, index=pd.Index(input_df_index, name='visitor_id'),
                                        columns=['product_id'])
     # print('\n', visits_3min_df_input)
-    print("Nb de lignes dans luw_input + nb expected : {}".format(len(visits_min_df_input) + len(expected_list)),
-          "Nb de visites luw min visites : {}".format(len(visits_min_df)),
-          "Nb de produits dans luw min visites : {}".format(visits_min_df['product_id'].nunique()),
-          '\n', sep='\n')
+    if not is_test:
+        print("Nb de lignes dans luw_input + nb expected : {}".format(len(visits_min_df_input) + len(expected_list)),
+              "Nb de visites luw min visites : {}".format(len(visits_min_df)),
+              "Nb de produits dans luw min visites : {}".format(visits_min_df['product_id'].nunique()),
+              '\n', sep='\n')
 
     return np.array(visitors), visits_min_df_input, expected_list
 
