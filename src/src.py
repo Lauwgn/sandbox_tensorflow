@@ -34,6 +34,14 @@ def convert_id_into_category(product_id, catalog):
 
 
 def split_path_and_last_product(luw, is_test=False):
+    """
+    :param luw:
+    :param is_test:
+    :return:
+        visitors : visitor's id list uniques, format numpy.array
+        luw_input :  X, data for model
+        expected_list : Y, data to predict
+    """
 
     visitors, input_list, input_index, input_df_list, input_df_index, expected_list = [], [], [], [], [], []
     luw = luw.set_index(keys=['visitor_id'])[['product_id']]
