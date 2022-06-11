@@ -98,9 +98,12 @@ def main():
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'])
 
+    model.fit(X_train, y_train, batch_size=32, epochs=2, verbose=True)
     # model.fit(X_train, y_train, batch_size=128, epochs=40, verbose=True)
 
-    # model.save('data/model_azimut')
+    model.save('data/model_azimut_v2')
+
+    exit()
 
     """ ******************************************************************************** """
     """ RECHERCHE DES PARAMETRES nb_epoch ET batch_size                                  """

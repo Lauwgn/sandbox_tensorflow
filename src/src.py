@@ -27,10 +27,20 @@ def convert_vect_into_ids(x, dict_products_corresp_int_id):
 
 def convert_id_into_category(product_id, catalog):
 
+    category = None
     prod = CatalogManager.find_product_in_catalog_with_attributs(catalog, attribut="id", attr_value=product_id)
     # print(prod.to_dict())
-    category = prod.convert_into_category_azimut()
+    if prod:
+        category = prod.convert_into_category_azimut()
     return category
+
+
+def search_max_occurences(tmp_list):
+
+    df = pd.Series(tmp_list)
+    occ_df = df.value_counts(sort=True, ascending=False)
+
+    return occ_df.index[0]
 
 
 def split_path_and_last_product(luw, is_test=False):

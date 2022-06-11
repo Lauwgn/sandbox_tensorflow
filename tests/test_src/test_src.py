@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 from src.src import convert_vect_into_ids, correspondance_table, \
-    split_path_and_last_product
+    split_path_and_last_product, search_max_occurences
 
 
 class TestConvertVectIntoIds(unittest.TestCase):
@@ -31,6 +31,20 @@ class TestCorrespondanceTable(unittest.TestCase):
         self.assertDictEqual(expected1, result1)
         self.assertDictEqual(expected2, result2)
 
+
+class TestSearchMaxOccurences(unittest.TestCase):
+
+    def test_1(self):
+        l = [0, 1, 2, 3, 2]
+        result = search_max_occurences(l)
+        # print(result)
+        self.assertEqual(2, result)
+
+    def test_2(self):
+        l = ['a', 'b', 'c', 'c']
+        result = search_max_occurences(l)
+        # print(result)
+        self.assertEqual('c', result)
 
 class TestSplitPathAndLastProduct(unittest.TestCase):
 

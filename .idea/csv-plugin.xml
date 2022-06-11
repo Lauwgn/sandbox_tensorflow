@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/azimut_eval_model.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/azimut_test_model.py">
           <value>
             <Attribute>
@@ -18,6 +25,13 @@
           </value>
         </entry>
         <entry key="/azimut_train.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/brouillon.py">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -38,6 +52,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/models/curlr_manager.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/models/models.py">
           <value>
             <Attribute>
@@ -46,6 +67,13 @@
           </value>
         </entry>
         <entry key="/regression.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/src/control_by_cohort.py">
           <value>
             <Attribute>
               <option name="separator" value="," />

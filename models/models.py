@@ -153,6 +153,13 @@ class Curlr(pd.DataFrame):
             json.dump(c_url_r_dict, json_file, indent=4)
         json_file.close()
 
+    def convert_product_id_into_cohort(self, product_id):
+
+        cohort_id = None
+        if product_id in self.index:
+            cohort_id = self.loc[product_id, 'cohort_id']
+        return cohort_id
+
 
 class Durl(pd.DataFrame):
 
@@ -343,6 +350,14 @@ class Product:
         category = ref[2:4]
         return category
 
+    def convert_into_cohort(self, curlr):
+
+        cohort_id = None
+
+        if self.id in curlr.index:
+            cohort_id = curlr.loc[self.id, "cohort_id"]
+
+        return cohort_id
 
     def to_dict(self):
         expired_at = self.expired_at

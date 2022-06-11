@@ -233,6 +233,47 @@ class TestCurlrSortForExportFull(unittest.TestCase):
         self.assertEqual(["id_1", "id_4", "id_5", "id_2", "id_3"], curlr.index.tolist())
 
 
+
+class TestCurlrConvertProductIdIntoCohort(unittest.TestCase):
+
+    def test_1(self):
+
+        columns = ['cohort_id', 'qualif', 'nb_visitors_id', 'nb_visitors_coh', 'cohort_size', 'url', 'name']
+        index = pd.Index(data=["id_1", "id_2", "id_3", "id_4"], name="id")
+        data = [["cohort_-1", "ISOLES", 4, 10, 3, "url_1", "name_1"],
+                ["cohort_0", "qualif_0", 3, 8, 2, "url_1", "name_1"],
+                ["cohort_0", "qualif_0", 3, 8, 2, "url_1", "name_1"],
+                ["cohort_1", "qualif_1", 2, 6, 1, "url_1", "name_1"]]
+
+        curlr = Curlr(pd.DataFrame(data=data, columns=columns, index=index))
+
+        product_id = "id_1"
+
+        result = curlr.convert_product_id_into_cohort(product_id)
+        # print(result)
+
+        self.assertEqual("cohort_-1", result)
+
+    def test_2_none(self):
+
+        columns = ['cohort_id', 'qualif', 'nb_visitors_id', 'nb_visitors_coh', 'cohort_size', 'url', 'name']
+        index = pd.Index(data=["id_1", "id_2", "id_3", "id_4"], name="id")
+        data = [["cohort_-1", "ISOLES", 4, 10, 3, "url_1", "name_1"],
+                ["cohort_0", "qualif_0", 3, 8, 2, "url_1", "name_1"],
+                ["cohort_0", "qualif_0", 3, 8, 2, "url_1", "name_1"],
+                ["cohort_1", "qualif_1", 2, 6, 1, "url_1", "name_1"]]
+
+        curlr = Curlr(pd.DataFrame(data=data, columns=columns, index=index))
+
+        product_id = "id_5"
+
+        result = curlr.convert_product_id_into_cohort(product_id)
+        # print(result)
+
+        self.assertIsNone(result)
+
+
+
 class TestLuwFilterProductIdsFromCatalog(unittest.TestCase):
 
     def test_1_general(self):
@@ -352,6 +393,45 @@ class TestProductConvertIntCategoryAzimut(unittest.TestCase):
         # print(result)
 
         self.assertEqual("SR", result)
+
+
+class TestProductConvertIntoCohort(unittest.TestCase):
+
+    def test_1(self):
+
+        columns = ['cohort_id', 'qualif', 'nb_visitors_id', 'nb_visitors_coh', 'cohort_size', 'url', 'name']
+        index = pd.Index(data=["id_1", "id_2", "id_3", "id_4"], name="id")
+        data = [["cohort_-1", "ISOLES", 4, 10, 3, "url_1", "name_1"],
+                ["cohort_0", "qualif_0", 3, 8, 2, "url_1", "name_1"],
+                ["cohort_0", "qualif_0", 3, 8, 2, "url_1", "name_1"],
+                ["cohort_1", "qualif_1", 2, 6, 1, "url_1", "name_1"]]
+
+        curlr = Curlr(pd.DataFrame(data=data, columns=columns, index=index))
+
+        p = Product(id="id_1", ref="FRSR01")
+
+        result = p.convert_into_cohort(curlr)
+        # print(result)
+
+        self.assertEqual("cohort_-1", result)
+
+    def test_2_none(self):
+
+        columns = ['cohort_id', 'qualif', 'nb_visitors_id', 'nb_visitors_coh', 'cohort_size', 'url', 'name']
+        index = pd.Index(data=["id_1", "id_2", "id_3", "id_4"], name="id")
+        data = [["cohort_-1", "ISOLES", 4, 10, 3, "url_1", "name_1"],
+                ["cohort_0", "qualif_0", 3, 8, 2, "url_1", "name_1"],
+                ["cohort_0", "qualif_0", 3, 8, 2, "url_1", "name_1"],
+                ["cohort_1", "qualif_1", 2, 6, 1, "url_1", "name_1"]]
+
+        curlr = Curlr(pd.DataFrame(data=data, columns=columns, index=index))
+
+        p = Product(id="id_5", ref="FRSR01")
+
+        result = p.convert_into_cohort(curlr)
+        # print(result)
+
+        self.assertIsNone(result)
 
 
 class TestProductToDict(unittest.TestCase):
