@@ -46,8 +46,8 @@ luw = Luw(luw[100000:].reset_index(drop=True))
 """ ******************************************************************************** """
 """ CONTROLES PAR LA COHORTE                                                         """
 """ ******************************************************************************** """
-
-if True:
+cohort = False
+if cohort:
     curlr = CurlrManager.import_c_url_r('data/output_30_533d1d6652e1_210301-210905_curlr_revu_url_5-0_wvi_2-28.csv')
     print(curlr)
 
@@ -109,9 +109,23 @@ print("X.shape : {}".format(X.shape),
 probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
 predictions = probability_model.predict(X)
 
+# print(predictions)
+
+evaluation = model.evaluate(X, y)
+print(evaluation)
+
+
+evaluation_proba = probability_model.evaluate(X, y)
+print(evaluation_proba)
+
+exit()
+
 """ ******************************************************************************** """
 """ CONTROLES DU MODELE - PAR PRODUIT                                                """
 """ ******************************************************************************** """
+
+# probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
+# predictions = probability_model.predict(X)
 
 # # for i in [2, 3, 4]:
 # #     r = convert_vect_into_ids(X[i], dict_products_corresp_int_id)

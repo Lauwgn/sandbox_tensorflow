@@ -87,6 +87,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/src/train_to_predict_id.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/tests/test_src/test_src.py">
           <value>
             <Attribute>

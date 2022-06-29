@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import pandas as pd
 
-from src.src import convert_vect_into_ids, correspondance_table, \
+from src.src import convert_vect_into_ids, correspondance_table_product_id, correspondance_table_category, \
     split_path_and_last_product, search_max_occurences
 
 
@@ -19,13 +19,26 @@ class TestConvertVectIntoIds(unittest.TestCase):
         self.assertEqual(["id_2", "id_6"], result)
 
 
-class TestCorrespondanceTable(unittest.TestCase):
+class TestCorrespondanceTableId(unittest.TestCase):
 
     def test_1(self):
 
         id_list = ["id_1", "id_2", "id_3"]
 
-        result1, result2 = correspondance_table(id_list)
+        result1, result2 = correspondance_table_product_id(id_list)
+        expected1 = {0: "id_1", 1: "id_2", 2: "id_3"}
+        expected2 = {"id_1": 0, "id_2": 1, "id_3": 2}
+        self.assertDictEqual(expected1, result1)
+        self.assertDictEqual(expected2, result2)
+
+
+class TestCorrespondanceTableCategory(unittest.TestCase):
+
+    def test_1(self):
+
+        cat_list = ["id_1", "id_1", "id_1", "id_2", "id_3"]
+
+        result1, result2 = correspondance_table_category(cat_list)
         expected1 = {0: "id_1", 1: "id_2", 2: "id_3"}
         expected2 = {"id_1": 0, "id_2": 1, "id_3": 2}
         self.assertDictEqual(expected1, result1)
