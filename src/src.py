@@ -120,7 +120,8 @@ def split_path_and_last_product(luw, is_test=False):
     """
 
     visitors, input_list, input_index, input_df_list, input_df_index, expected_list = [], [], [], [], [], []
-    luw = luw.set_index(keys=['visitor_id'])[['product_id']]
+    if luw.index.name != 'visitor_id':
+        luw = luw.set_index(keys=['visitor_id'])[['product_id']]
     # print(visits_min_df)
 
     # for tmp_visitor in visits_min_df.index.unique()[:2]:
@@ -148,4 +149,12 @@ def split_path_and_last_product(luw, is_test=False):
     return np.array(visitors), luw_input, expected_list
 
 
+def split_path_and_two_last_products(luw, is_test=False):
+
+    visitors, luw_path, last_product_list = split_path_and_last_product(luw, is_test)
+    # print(luw_path)
+
+    visitors_2, luw_path, prev_last_product_list = split_path_and_last_product(luw_path, is_test)
+
+    return visitors, luw_path, prev_last_product_list, last_product_list
 

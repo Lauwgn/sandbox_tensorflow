@@ -325,6 +325,25 @@ class TestLuwFilterProductIdsFromCatalog(unittest.TestCase):
         self.assertEqual("id_2", luw["product_id"].iloc[1])
 
 
+class TestLuwAddColumnCategory(unittest.TestCase):
+
+    def test_1(self):
+        luw = Luw(data=[["wvi_1", "id_1"],
+                        ["wvi_2", "id_5"],
+                        ["wvi_3", "id_3"]],
+                  columns=["visitor_id", "product_id"])
+
+        catalog_df = pd.DataFrame([["id_1", 'cat_1'], ["id_2", 'cat_2'], ["id_3", 'cat_3'], ["id_4", 'cat_4']],
+                                  columns=["product_id", "category"])
+        catalog_df = catalog_df.set_index(keys='product_id')
+        # print(catalog_df)
+
+        luw.add_column_category(catalog_df)
+        # print(luw)
+        result = luw['category'].tolist()
+        self.assertEqual(['cat_1', None, 'cat_3'], result)
+
+
 class TestMvisDenseRenameColumnsToInt(unittest.TestCase):
 
     def test_1(self):

@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 from src.src import convert_vect_into_ids, correspondance_table_product_id, correspondance_table_category, \
-    split_path_and_last_product, search_max_occurences
+    split_path_and_last_product, split_path_and_two_last_products, search_max_occurences
 
 
 class TestConvertVectIntoIds(unittest.TestCase):
@@ -59,6 +59,7 @@ class TestSearchMaxOccurences(unittest.TestCase):
         # print(result)
         self.assertEqual('c', result)
 
+
 class TestSplitPathAndLastProduct(unittest.TestCase):
 
     def test_1(self):
@@ -86,3 +87,31 @@ class TestSplitPathAndLastProduct(unittest.TestCase):
         # print(expected_list)
         self.assertEqual(["id_4", "id_4", "id_4"], expected_list)
 
+
+class TestSplitPathAndTwoLastProduct(unittest.TestCase):
+
+    def test_1(self):
+
+        luw = pd.DataFrame.from_dict({'visitor_id': ['wvi_1',
+                                               'wvi_1', 'wvi_2', 'wvi_3',
+                                               'wvi_1', 'wvi_2', 'wvi_3',
+                                               'wvi_1', 'wvi_2', 'wvi_3'],
+                                       'product_id': ['id_1',
+                                               'id_2', 'id_2', 'id_5',
+                                               'id_3', 'id_3', 'id_6',
+                                               'id_4', 'id_4', 'id_4']
+                                       })
+
+        # print(luw)
+
+        visitors, luw_path, prev_last_product_list, last_product_list = split_path_and_two_last_products(luw, is_test=True)
+
+        self.assertEqual(["wvi_1", "wvi_2", "wvi_3"], visitors.tolist())
+
+        # print(visits_min_df_input)
+        self.assertEqual(["wvi_1", "wvi_1", "wvi_2", "wvi_3"], luw_path.index.tolist())
+        self.assertEqual(["id_1", "id_2", "id_2", "id_5"], luw_path["product_id"].tolist())
+
+        # print(expected_list)
+        self.assertEqual(["id_3", "id_3", "id_6"], prev_last_product_list)
+        self.assertEqual(["id_4", "id_4", "id_4"], last_product_list)

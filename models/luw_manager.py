@@ -79,7 +79,7 @@ class LuwManager:
                       len(visitor_id_min_visits_list)),
                   "Nb products in Luw : {}".format(luw['product_id'].nunique()), '\n', sep='\n')
 
-        return new_luw
+        return Luw(new_luw)
 
     @staticmethod
     def convert_luw_into_mvis_sparse(l_uw):

@@ -77,9 +77,9 @@ class Catalog:
 
         products_df_values = []
         for p in self.products:
-            tmp_prod_values = [p.id, p.url, p.url, p.nb_visitors, p.keywords]
+            tmp_prod_values = [p.id, p.url, p.url, p.nb_visitors, p.keywords, p.ref]
             products_df_values.append(tmp_prod_values)
-        products_df = pd.DataFrame(columns=["product_id", "name", "url", "nb_visitors", "keywords"],
+        products_df = pd.DataFrame(columns=["product_id", "name", "url", "nb_visitors", "keywords", "ref"],
                                    data=products_df_values)
         products_df.set_index(keys="product_id", inplace=True)
 

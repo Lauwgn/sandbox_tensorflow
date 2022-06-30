@@ -1,16 +1,16 @@
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import itertools
+
 import pickle
-from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 
 import tensorflow as tf
 from tensorflow import keras
 
 from models.models import Luw
-from src.src import convert_vect_into_ids, convert_id_into_category, search_max_occurences, split_path_and_last_product
-from src.control_by_cohort import control_by_cohort
-from models.curlr_manager import CurlrManager
+from src.src import split_path_and_last_product
 from models.luw_manager import LuwManager
 from models.mvisdense_manager import MvisDenseManager
 from models.model_catalog import Catalog
@@ -94,23 +94,45 @@ y_true = np.array(expected_list_category_int)
 """ ******************************************************************************** """
 
 y_pred_sparse = model.predict(x_test)
-print(np.round(y_pred_sparse))
-print(y_true)
+y_pred = list(map(lambda x: np.argmax(x), y_pred_sparse))
+# print(y_pred)
+# print(y_true)
+print("Longueur de y_pred : {}, Longueur de y_true : {}".format(len(y_pred), len(y_true)))
 
 scce = tf.keras.losses.SparseCategoricalCrossentropy()
-print(scce(y_true, y_pred_sparse).numpy())
-
-
-y_pred = list(map(lambda x: np.argmax(x), y_pred_sparse))
-print(y_pred)
-print(len(y_pred), len(y_true))
+print("Sparse Categorical Cross Entropy y_true, y_pred : {}".format(scce(y_true, y_pred_sparse).numpy()))
 
 acc = tf.keras.metrics.Accuracy()
-print(acc(y_pred, y_true))
+print("Accuracy y_true, y_pred : {}".format(acc(y_true, y_pred).numpy()))
 
-cm = confusion_matrix(y_pred, y_true)
-print(cm)
-
+cm = confusion_matrix(y_true, y_pred, labels=np.arange(0, len(dict_products_corresp_int_cat)))
+print('\n', cm)
 print(dict_products_corresp_int_cat)
 
+""" ******************************************************************************** """
+""" PLOT : MATRICE DE CONFUSION                                                      """
+""" ******************************************************************************** """
+
+plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
+plt.tight_layout()
+plt.colorbar()
+
+classes = [dict_products_corresp_int_cat[i] for i in range(len(dict_products_corresp_int_cat))]
+
+# tick_marks, classes = np.arange(cm.shape[0]), np.arange(cm.shape[0])
+plt.xticks(np.arange(len(classes)), classes, rotation=45)
+plt.yticks(np.arange(len(classes)), classes)
+
+plt.xlabel('Predicted label')
+plt.ylabel('True label')
+
+thresh = cm.max() / 2.
+for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+    plt.text(j, i, format(cm[i, j]),
+             horizontalalignment="center",
+             color="white" if cm[i, j] > thresh else "black")
+
+plt.show()
+
 exit()
+

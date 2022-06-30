@@ -199,6 +199,16 @@ class Luw(pd.DataFrame):
         self['product_id'] = self['product_id'].progress_apply(lambda x: x if x in list_of_ids else np.NaN)
         self.dropna(inplace=True, subset=["product_id"])
 
+    def add_column_category(self, catalog_df):
+        cat_list = []
+        for i in range(len(self)):
+            tmp_ref = None
+            tmp_id = self['product_id'].iloc[i]
+            if tmp_id in catalog_df.index:
+                tmp_ref = catalog_df["category"].loc[tmp_id]
+            cat_list.append(tmp_ref)
+        self['category'] = cat_list
+
 
 class Mvis:
 

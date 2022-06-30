@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/azimut_eval_category_model_basic.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/azimut_eval_model.py">
           <value>
             <Attribute>
