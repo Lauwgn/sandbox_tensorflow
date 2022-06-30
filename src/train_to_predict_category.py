@@ -1,33 +1,24 @@
 import numpy as np
 import tensorflow as tf
 from matplotlib import pyplot as plt
+import pickle
 
 from src.src import convert_vect_into_ids, correspondance_table_category
 from sklearn.model_selection import train_test_split
 
 
-def train_to_predict_category(luw, mvis_input, visitors, last_product_list, nb_products_visits_min_df,
-                              catalog_df):
+def train_to_predict_category(mvis_input, visitors, expected_list_category_int, nb_category):
 
-    """ ******************************************************************************** """
-    """ TABLE DE CORRESPONDANCE - UN ID_PRODUCT POUR UN INT                              """
-    """ ******************************************************************************** """
-
-    # print(last_product_list)
-    expected_list_category = list(map(lambda x: catalog_df["category"].loc[x], last_product_list))
-    dict_products_corresp_int_cat, dict_products_corresp_cat_int = correspondance_table_category(expected_list_category)
-    expected_list_category_int = list(map(lambda x: dict_products_corresp_cat_int[x], expected_list_category))
-    # print(expected_list_category_int)
 
     """ ******************************************************************************** """
     """ PREPROCESSING                                                                    """
     """ ******************************************************************************** """
-    nb_category = catalog_df["category"].nunique()
 
     x = mvis_input.values
     y = np.array(expected_list_category_int)
 
-    x_train, x_test, y_train, y_test, vis_train, vis_test = train_test_split(x, y, visitors, test_size=0.2, random_state=20)
+    # x_train, x_test, y_train, y_test, vis_train, vis_test = train_test_split(x, y, visitors, test_size=0.2, random_state=20)
+    x_train, x_test, y_train, y_test, vis_train, vis_test = train_test_split(x, y, visitors, test_size=0.2)
     # x_train, y_train, vis_train, = X, y, visitors
     print("x.shape : {}".format(x.shape),
           "x_train.shape : {}".format(x_train.shape),
@@ -49,22 +40,22 @@ def train_to_predict_category(luw, mvis_input, visitors, last_product_list, nb_p
     """ ******************************************************************************** """
 
     model = tf.keras.Sequential([
-        tf.keras.layers.Dense(64, activation='relu'),
-        tf.keras.layers.Dense(64, activation='relu'),
-        tf.keras.layers.Dense(nb_category)
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(nb_category, activation='softmax')
+        # tf.keras.layers.Dense(nb_category),
     ])
 
     q = model.compile(
                   optimizer='adam',
                   # optimizer=keras.optimizers.Adam(learning_rate=0.0001),
-                  # loss=tf.keras.losses.SparseCategoricalCrossentropy(),
-                  loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+                  loss=tf.keras.losses.SparseCategoricalCrossentropy(),
+                  # loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'],
                   )
 
-    r = model.fit(x_train, y_train, validation_data=(x_test, y_test), batch_size=32, epochs=100, verbose=False)
+    r = model.fit(x_train, y_train, validation_data=(x_test, y_test), batch_size=32, epochs=15, verbose=False)
     # model.fit(x_train, y_train, batch_size=128, epochs=40, verbose=True)
-
 
     plt.figure(figsize=(15, 5))
     plt.subplot(1, 2, 1)
@@ -78,13 +69,12 @@ def train_to_predict_category(luw, mvis_input, visitors, last_product_list, nb_p
     plt.legend()
     plt.show()
 
+
+    model.save('data/models_category/model_azimut_category_prediction.h5')
     exit()
 
 
-    # @todo : ON EN EST LA !!!!!!!!!!!
 
-
-    # model.save('data/model_azimut_v2')
 
     """ ******************************************************************************** """
     """ CONTROLES DU MODELE                                                              """
@@ -124,7 +114,8 @@ def train_to_predict_category(luw, mvis_input, visitors, last_product_list, nb_p
         model = tf.keras.Sequential([
             tf.keras.layers.Dense(64, activation='relu'),
             tf.keras.layers.Dense(64, activation='relu'),
-            tf.keras.layers.Dense(nb_products_visits_min_df)
+            tf.keras.layers.Dense(nb_products_visits_min_df),
+            # tf.keras.layers.Dense(nb_products_visits_min_df, activation='softmax')
         ])
 
         model.compile(optimizer='adam',

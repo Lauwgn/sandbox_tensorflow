@@ -128,6 +128,33 @@ class Catalog:
                                                                                            indice))
         return self.products[indice]
 
+    def azimut_extract_category_to_dataframe(self):
+
+        id_list, url_list, ref_list, category_list = [], [], [], []
+
+        for tmp_prod in self.products:
+            tmp_id = tmp_prod.id
+            tmp_url = tmp_prod.url
+            tmp_ref = tmp_prod.ref
+            tmp_cat = tmp_prod.convert_into_category_azimut()
+
+            id_list.append(tmp_id)
+            url_list.append(tmp_url)
+            ref_list.append(tmp_ref)
+            category_list.append(tmp_cat)
+
+        df = pd.DataFrame.from_dict(
+            {"product_id": id_list, "url": url_list, "category": category_list, "ref": ref_list})
+        print(df['category'].isnull().value_counts())
+
+        df.sort_values(by='category', ascending=True, inplace=True)
+        df.to_csv("data/catalog_azimut_cat.csv", index=False)
+
+        return df
+
+
+
+
     @staticmethod
     def strip_url(x):
         """

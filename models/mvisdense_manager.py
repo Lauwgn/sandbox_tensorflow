@@ -32,6 +32,6 @@ class MvisDenseManager:
         # print(mvis)
         # print(mvis.columns)
 
-        return MvisDense(mvis)
+        return MvisDense(mvis.copy())
 
 

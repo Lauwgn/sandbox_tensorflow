@@ -8,18 +8,16 @@ from src.src import control_data, correspondance_table_product_id, split_path_an
 from src.train_to_predict_id import train_to_predict_id
 from src.train_to_predict_category import train_to_predict_category
 
+from models.models import Luw
+from models.catalog_manager import CatalogManager
 from models.mvisdense_manager import MvisDenseManager
 from models.luw_manager import LuwManager
 
 
 def main():
 
-    luw = pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=30000)
-    # print(luw)
-
-    catalog_df = pd.read_csv("data/catalog_azimut_cat.csv")
-    catalog_df.set_index(keys="product_id", inplace=True)
-    print(catalog_df)
+    luw = Luw(pd.read_csv('data/20220311-luw-533d1d6652e1-20210101-20220310.csv', nrows=10000))
+    print(luw)
 
     """ ******************************************************************************** """
     """ VISITEURS AYANT VU AU MOINS xxx PRODUITS ET AU MAX YYYYY PRODUITS                """
@@ -61,11 +59,10 @@ def main():
     # print(mvis_input)
     # mvis_input.to_csv("data/mvis_input.csv")
 
-    # train_to_predict_id(luw, mvis_input, visitors, last_product_list, nb_products_visits_min_df,
-    #                     dict_products_corresp_int_id, dict_products_corresp_id_int)
+    train_to_predict_id(luw, mvis_input, visitors, last_product_list, nb_products_visits_min_df,
+                        dict_products_corresp_int_id, dict_products_corresp_id_int)
 
-    train_to_predict_category(luw, mvis_input, visitors, last_product_list, nb_products_visits_min_df,
-                              catalog_df)
+
 
 main()
 

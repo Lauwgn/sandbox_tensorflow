@@ -17,6 +17,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/azimut_eval_model_category.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/azimut_test_model.py">
           <value>
             <Attribute>
@@ -25,6 +32,13 @@
           </value>
         </entry>
         <entry key="/azimut_train.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/azimut_train_predict_category.py">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -52,10 +66,24 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/models/catalog_manager.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/models/curlr_manager.py">
           <value>
             <Attribute>
               <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/models/model_catalog.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
             </Attribute>
           </value>
         </entry>
@@ -81,6 +109,13 @@
           </value>
         </entry>
         <entry key="/src/src.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/src/train_to_predict_category.py">
           <value>
             <Attribute>
               <option name="separator" value="," />

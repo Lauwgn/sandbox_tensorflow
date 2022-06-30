@@ -43,15 +43,11 @@ product_id,url,category,ref
 60f294d9e2f187b2f3aa5b14,http://azimut.ski/en/trips/monte-rosa-and-its--m-summits---mountaineering,AL,ITALPRIV11
 60bc8b36e2f187b2f391f371,http://azimut.ski/en/trips/glacier-walk-ecrins-france,AL,FRAL02
 60f2c60ce2f187b2f3f06dcf,http://azimut.ski/en/trips/haute-maurienne-albaron-alpinisme,AL,FRAL04
-6022dbf9360e2c9356613d5e,http://azimut.ski/fr/trips/sejour-all-mountain-brianconnais,BA,FRBAM01
-60676a2889fe135ad841c150,http://azimut.ski/fr/trips/vtt-electrique-douceurs-du-brianconnais,BE,FRBEL03
-602496c7360e2c9356c0afc8,http://azimut.ski/fr/trips/vtt-electrique-enduro---week-end---spots-secrets-du-queyras,BE,FRBEN02
-6021533f360e2c9356159e91,http://azimut.ski/fr/trips/vtt-raid---queyras-val-maira,BR,ITBRA01
+6027b01c360e2c9356418075,http://azimut.ski/fr/trips/mont-blanc-normale,AL,FREA18
 60ad10c489fe135ad85efe2d,http://azimut.ski/en/trips/enduro---bike-shuttle---made-in-hautes-alpes,BS,FRBS01
 6046552d360e2c935619d6a9,http://azimut.ski/fr/trips/les-spots-du-brianonnais-a-la-journee,BS,FRBS02
 603fb6b1360e2c9356216f99,http://azimut.ski/fr/trips/bike---journees-shuttle---enduro-made-in-hautes-alpes,BS,FRBS01
-60a3704289fe135ad8bddfc5,http://azimut.ski/fr/trips/acomptes-ffcam-resas-persos-mt-blanc-guides,CP,ACCPERSO
-6027b01c360e2c9356418075,http://azimut.ski/fr/trips/mont-blanc-normale,EA,FREA18
+60a3704289fe135ad8bddfc5,http://azimut.ski/fr/trips/acomptes-ffcam-resas-persos-mt-blanc-guides,F0,ACCPERSO
 60214eb7360e2c9356fbbed4,http://azimut.ski/fr/trips/formation-scurit-neige-et-avalanches,F0,FRF01
 61099991e2f187b2f3045b61,http://azimut.ski/en/trips/formation-scurit-neige-et-avalanches,F0,FRF01
 611fc689e2f187b2f358362e,http://azimut.ski/en/trips/gravel-bike---cycling-trip-in-kirghizstan,GB,KIGB01
@@ -68,12 +64,12 @@ product_id,url,category,ref
 608fe6c989fe135ad8237270,http://azimut.ski/fr/trips/vtt-electrique---liberte---week-end-decouverte-dans-la-vallee-des-fonts,LI,FRLIB01
 6139c7083901fe6ce28ebb5c,http://azimut.ski/en/trips/e-mountain-biking---freedom---a-discover-week-end-into-the-fonts-valley,LI,FRLIB01
 609e9a8089fe135ad876fbbe,http://azimut.ski/fr/trips/vtt--e-bike---liberte---week-end-de-pur-ride-autour-de-cervieres,LI,FRLIB02
-619f3d5b8583af6aab97c523,http://azimut.ski/fr/trips/archiride---skitrip-freeride-freerando-japon,PS,JAPSFPRIV01
 606dd47689fe135ad872cd66,http://azimut.ski/fr/trips/cervieres-cocktail-d-activites-nature-en-famille,RA,FRRA03
 616559a9c7c0380d7895aa31,http://azimut.ski/fr/trips/au-pays-de-la-meije---un-jour-un-lac,RA,FRRA04
 606dd1c789fe135ad8718220,http://azimut.ski/fr/trips/cervieres-izoard-rando-bistrot,RA,FRRA02 FRAW70
 606dcef089fe135ad87018ff,http://azimut.ski/fr/trips/cervieres-vallee-sauvage-du-brianonnais-a-pied,RA,FRRA01 FRA531
 608b2b9289fe135ad85f6f0a,http://azimut.ski/fr/trips/cervieres-cocktail-d-activites-nature-en-famille,RA,FRRA03 FRAF89
+619f3d5b8583af6aab97c523,http://azimut.ski/fr/trips/archiride---skitrip-freeride-freerando-japon,SF,JAPSFPRIV01
 60303b02360e2c9356be224a,http://azimut.ski/fr/trips/week-end-heliski-freeride-a-gressoney-mont-rose---italie,SF,ITSF07
 60ae550689fe135ad8e20a1d,http://azimut.ski/fr/trips/skitrip-freeride-freerando-japon-voyage-ski-freeride-japon,SF,JASF01
 609ccf8789fe135ad84a15ac,http://azimut.ski/fr/trips/weekend-fin-de-saison--cervinia---freeride,SF,ITSF99
@@ -318,7 +314,8 @@ product_id,url,category,ref
 60213293360e2c9356115209,http://azimut.ski/fr/trips/turquie-ski-de-randonnee-dans-les-taurus,SR,TUSR01
 6037c19f360e2c9356a5bc47,http://azimut.ski/fr/trips/les-spots-du-brianonnais-a-la-journee,SV,FRSV02
 60351ea4360e2c9356d2c759,http://azimut.ski/fr/trips/test-shuttle-guidee-vtt---puy,SV,FRSV01
-60bb66f3e2f187b2f3df1c9f,http://azimut.ski/fr/trips/Via-Cordata-Vercors-Sauvage,VC,FRVC01
+60676a2889fe135ad841c150,http://azimut.ski/fr/trips/vtt-electrique-douceurs-du-brianconnais,VE,FRBEL03
+602496c7360e2c9356c0afc8,http://azimut.ski/fr/trips/vtt-electrique-enduro---week-end---spots-secrets-du-queyras,VE,FRBEN02
 6093be5d89fe135ad8c448bf,http://azimut.ski/fr/trips/lormand--e-bike-raid---tour-du-queyras-faon-azimut,VE,FRVEPRIV01
 61237614e2f187b2f3d80d69,http://azimut.ski/en/trips/electric-bike--learn-to-pilot-your-bike-in-beautiful-italian-piedmont,VE,ITVE04
 608a5f1889fe135ad807d3d0,http://azimut.ski/fr/trips/e-bike-raid---face-au-mont-blanc,VE,FRVE13
@@ -361,6 +358,7 @@ product_id,url,category,ref
 60b07eeb89fe135ad8898525,http://azimut.ski/en/trips/the-basics-of-mountain-biking-in-serre-chevalier-valley,VE,FRVE04  FRAV15
 60b6534589fe135ad8da743b,http://azimut.ski/en/trips/electric-bike--a-week-end-to-learn-to-pilot-your-bike-in-beautiful-italian-piedmont,VE,ITVE03 ITAV07
 602953f6360e2c935683bb10,http://azimut.ski/fr/trips/vtt-electrique---stage-ebike-balade-dans-le-magnifique-piemont-italien,VE,ITVE04
+60bb66f3e2f187b2f3df1c9f,http://azimut.ski/fr/trips/Via-Cordata-Vercors-Sauvage,VF,FRVC01
 602be399360e2c93560fe1c3,http://azimut.ski/fr/trips/Via-ferrata-Dolomite-Cortina-d-Ampezzo,VF,ITVF01 ALP005
 602be39f360e2c93560febe6,http://azimut.ski/fr/trips/via-ferrata-dans-le-stubai---le-tyrol-vu-d-en-haut,VF,AUVF01
 602be395360e2c93560fd260,http://azimut.ski/fr/trips/week-end-via-ferrata-des-ecrins,VF,FRVF02
@@ -369,6 +367,8 @@ product_id,url,category,ref
 603e5ffc360e2c9356473294,http://azimut.ski/fr/trips/selvaggio-blu-l-aventure-integrale,VF,ITVF03
 60231a1c360e2c9356854969,http://azimut.ski/fr/trips/via-ferrata-des-ecrins,VF,FRVF01
 60ba8b21e2f187b2f3cd14b0,http://azimut.ski/en/trips/Via-ferrata-Dolomites-Cortina-d-Ampezzo,VF,ITVF01 ALP005
+6022dbf9360e2c9356613d5e,http://azimut.ski/fr/trips/sejour-all-mountain-brianconnais,VM,FRBAM01
+6021533f360e2c9356159e91,http://azimut.ski/fr/trips/vtt-raid---queyras-val-maira,VM,ITBRA01
 60216283360e2c9356ec4fa0,http://azimut.ski/fr/trips/vtt-enduro---incontournable-finale-ligure,VM,ITVM01
 619909958583af6aabbc28f6,http://azimut.ski/fr/trips/vtt-enduro---week-end-travail-ta-technique-dans-les-ecrins---deposes-navettes,VM,FRVM15
 602152a6360e2c9356135404,http://azimut.ski/fr/trips/vtt-raid---tour-du-mont-blanc,VM,FRVM02
@@ -405,4 +405,4 @@ product_id,url,category,ref
 6023f9ee360e2c9356d21bb1,http://azimut.ski/fr/trips/vtt-enduro---deposes-navettes-singletracks-et-farniente-au-lac-de-serre-poncon,VM,FRVM09
 60e9db3ce2f187b2f3d7110a,http://azimut.ski/en/trips/mountain-biking-serre-chevalier,VM,FRVM13
 60d5e8ede2f187b2f3177b5d,http://azimut.ski/en/trips/mountain-biking-tour-queyras,VM,FRVM01
-605fe65589fe135ad8426ecd,http://azimut.ski/fr/trips/vtt-raid-a-l-attaque-des-cerces,VT,FRVTT06
+605fe65589fe135ad8426ecd,http://azimut.ski/fr/trips/vtt-raid-a-l-attaque-des-cerces,VM,FRVTT06
