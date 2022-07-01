@@ -24,6 +24,20 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/azimut_eval_model_ANN_category.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/azimut_eval_model_basic_category.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/azimut_eval_model_category.py">
           <value>
             <Attribute>
@@ -130,6 +144,13 @@
           </value>
         </entry>
         <entry key="/src/train_to_predict_id.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/tests/test_models/test_models.py">
           <value>
             <Attribute>
               <option name="separator" value="," />

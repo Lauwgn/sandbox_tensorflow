@@ -21,23 +21,23 @@ from models.catalog_manager import CatalogManager
 """ IMPORT DU MODELE                                                                 """
 """ ******************************************************************************** """
 
-model = keras.models.load_model('data/models_category/model_azimut_category_prediction.h5')
+model = keras.models.load_model("data/models_category/model_azimut_category_prediction_luw100k.h5")
 
 
 """ ******************************************************************************** """
 """ TABLES DE CORRESPONDANCE                                                          """
 """ ******************************************************************************** """
 
-with open("data/models_category/dict_products_corresp_id_int.pickle", 'rb') as file:
+with open("data/models_category/dict_products_corresp_id_int_luw100k.pickle", 'rb') as file:
     dict_products_corresp_id_int = pickle.load(file)
 
-with open("data/models_category/dict_products_corresp_int_id.pickle", 'rb') as file:
+with open("data/models_category/dict_products_corresp_int_id_luw100k.pickle", 'rb') as file:
     dict_products_corresp_int_id = pickle.load(file)
 
-with open("data/models_category/dict_products_corresp_cat_int.pickle", 'rb') as file:
+with open("data/models_category/dict_products_corresp_cat_int_luw100k.pickle", 'rb') as file:
     dict_products_corresp_cat_int = pickle.load(file)
 
-with open("data/models_category/dict_products_corresp_int_cat.pickle", 'rb') as file:
+with open("data/models_category/dict_products_corresp_int_cat_luw100k.pickle", 'rb') as file:
     dict_products_corresp_int_cat = pickle.load(file)
 
 """ ******************************************************************************** """

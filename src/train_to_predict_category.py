@@ -18,8 +18,9 @@ def train_to_predict_category(mvis_input, visitors, expected_list_category_int, 
     y = np.array(expected_list_category_int)
 
     # x_train, x_test, y_train, y_test, vis_train, vis_test = train_test_split(x, y, visitors, test_size=0.2, random_state=20)
-    x_train, x_test, y_train, y_test, vis_train, vis_test = train_test_split(x, y, visitors, test_size=0.2)
-    # x_train, y_train, vis_train, = X, y, visitors
+    # x_train, x_test, y_train, y_test, vis_train, vis_test = train_test_split(x, y, visitors, test_size=0.2)
+    x_train, y_train, vis_train, = x, y, visitors
+
     print("x.shape : {}".format(x.shape),
           "x_train.shape : {}".format(x_train.shape),
           # "x_test.shape : {}".format(x_test.shape),
@@ -40,34 +41,45 @@ def train_to_predict_category(mvis_input, visitors, expected_list_category_int, 
     """ ******************************************************************************** """
 
     model = tf.keras.Sequential([
-        tf.keras.layers.Dense(128, activation='relu'),
-        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(128, activation='elu'),
+        tf.keras.layers.Dense(128, activation='elu'),
         tf.keras.layers.Dense(nb_category, activation='softmax')
         # tf.keras.layers.Dense(nb_category),
     ])
 
     q = model.compile(
-                  optimizer='adam',
-                  # optimizer=keras.optimizers.Adam(learning_rate=0.0001),
+                  # optimizer='adam',
+                  optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001),
                   loss=tf.keras.losses.SparseCategoricalCrossentropy(),
                   # loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                   metrics=['accuracy'],
                   )
 
-    r = model.fit(x_train, y_train, validation_data=(x_test, y_test), batch_size=32, epochs=15, verbose=False)
-    # model.fit(x_train, y_train, batch_size=128, epochs=40, verbose=True)
+    # r = model.fit(x_train, y_train, validation_data=(x_test, y_test), batch_size=32, epochs=10, verbose=False)
+    r = model.fit(x_train, y_train, batch_size=32, epochs=10, verbose=False)
 
-    plt.figure(figsize=(15, 5))
-    plt.subplot(1, 2, 1)
-    plt.plot(r.history['loss'], label='loss')
-    plt.plot(r.history['val_loss'], label='val_loss')
-    plt.legend()
+    # model.evaluate(x_test, y_test)
+    #
+    # y_pred_sparse = model.predict(x_test)
+    # y_pred = list(map(lambda x: np.argmax(x), y_pred_sparse))
+    #
+    # acc = tf.keras.metrics.Accuracy()
+    # print("Accuracy y_true, y_pred : {}".format(acc(y_test, y_pred).numpy()))
+    # print(len(np.where(y_pred == y_test)[0]) / len(y_pred))
+    #
+    #
+    #
+    # plt.figure(figsize=(15, 5))
+    # plt.subplot(1, 2, 1)
+    # plt.plot(r.history['loss'], label='loss')
+    # plt.plot(r.history['val_loss'], label='val_loss')
+    # plt.legend()
+    # # plt.show()
+    # plt.subplot(1, 2, 2)
+    # plt.plot(r.history['accuracy'], label='accuracy')
+    # plt.plot(r.history['val_accuracy'], label='val_accuracy')
+    # plt.legend()
     # plt.show()
-    plt.subplot(1, 2, 2)
-    plt.plot(r.history['accuracy'], label='accuracy')
-    plt.plot(r.history['val_accuracy'], label='val_accuracy')
-    plt.legend()
-    plt.show()
 
 
     model.save('data/models_category/model_azimut_category_prediction.h5')
